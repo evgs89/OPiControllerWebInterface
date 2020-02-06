@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="mdl-grid">
+        <div class="mdl-cell mdl-cell--4-col mdl-cell--6-col-tablet">
+            <div class="mdl-card--expand mdl-shadow--4dp">
+                <div class="mdl-card__title-text">
+                    Состояние коммутатора
+                </div>
+                <div id="switch_state" class="mdl-card__supporting-text">
+
+                </div>
+                <div class="mdl-card__actions">
+                    <a href="/switch_management">Подробнее</a>
+                </div>
+            </div>
+        </div>
+        <div class="mdl-cell mdl-cell--4-col mdl-cell--6-col-tablet">
+            <div class="mdl-card--expand mdl-shadow--4dp">
+                <div class="mdl-card__title-text">
+                    Состояние сети
+                </div>
+                <div class="mdl-card__supporting-text">
+                    <div class="mdl-spinner mdl-js-spinner is-active"></div>
+                </div>
+                <div class="mdl-card__actions">
+                    <a href="/ping">Подробнее</a>
+                </div>
+            </div>
+            <br>
+            <div class="mdl-card--expand mdl-shadow--4dp">
+                <div class="mdl-card__title-text">
+                    Состояние VPN
+                </div>
+                <div class="mdl-card__supporting-text">
+                    <div class="mdl-spinner mdl-js-spinner is-active"></div>
+                </div>
+                <div class="mdl-card__actions">
+                    <a href="/vpn">Подробнее</a>
+                </div>
+            </div>
+        </div>
+        <div class="mdl-cell mdl-cell--4-col mdl-cell--6-col-tablet">
+            <div class="mdl-card--expand mdl-shadow--4dp">
+                <div class="mdl-card__title-text">
+                    Последние события
+                </div>
+                <div class="mdl-card__supporting-text">
+                    <div class="mdl-spinner mdl-js-spinner is-active"></div>
+                </div>
+                <div class="mdl-card__actions">
+                    <a href="/log">Подробнее</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

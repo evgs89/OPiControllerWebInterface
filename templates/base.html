@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OrangePi Controller</title>
+    <link rel="stylesheet" href={{ url_for('static', filename='mdl/material.min.css') }}>
+    <script src={{ url_for('static', filename='mdl/material.min.js') }}></script>
+    <script src={{ url_for('static', filename='jquery-3.4.1.js') }}></script>
+    <script src={{ url_for('static', filename='main.js') }}></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+</head>
+<body>
+    <!-- Always shows a header, even in smaller screens. -->
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+      <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+          <!-- Title -->
+          <span class="mdl-layout-title">OrangePi Controller</span>
+          <!-- Add spacer, to align navigation to the right -->
+          <div class="mdl-layout-spacer"></div>
+          <!-- Navigation. We hide it in small screens. -->
+          <nav class="mdl-navigation mdl-layout--large-screen-only">
+            <a class="mdl-navigation__link" href="/">Главная</a>
+            <a class="mdl-navigation__link" href="/ping">Сеть</a>
+            <a class="mdl-navigation__link" href="/switch_management">Управление коммутатором</a>
+            <a class="mdl-navigation__link" href="/vpn">VPN</a>
+            <a class="mdl-navigation__link" href="/log">Лог</a>
+          </nav>
+        </div>
+      </header>
+      <div class="mdl-layout__drawer">
+        <span class="mdl-layout-title">OrangePi Controller</span>
+        <nav class="mdl-navigation">
+          <a class="mdl-navigation__link" href="/">Главная</a>
+          <a class="mdl-navigation__link" href="/ping">Сеть</a>
+          <a class="mdl-navigation__link" href="/switch_management">Управление коммутатором</a>
+          <a class="mdl-navigation__link" href="/vpn">VPN</a>
+          <a class="mdl-navigation__link" href="/log">Лог</a>
+        </nav>
+      </div>
+      <main class="mdl-layout__content">
+        <div class="page-content">
+            <!-- Your content goes here -->
+            {% block content %}
+                <div class="mdl-spinner mdl-js-spinner is-active"></div>
+            {% endblock %}
+        </div>
+      </main>
+        <footer class="mdl-mini-footer">
+          <div class="mdl-mini-footer__left-section">
+            <div class="mdl-logo">Title</div>
+            <ul class="mdl-mini-footer__link-list">
+              <li><a href="#">Help</a></li>
+              <li><a href="#">Privacy & Terms</a></li>
+            </ul>
+          </div>
+        </footer>
+
+    </div>
+</body>
+</html>
