@@ -21,3 +21,8 @@
   -moz-font-feature-settings: 'liga';
   -moz-osx-font-smoothing: grayscale;
 }
+
+.mdl-mini-footer {
+  padding-top: 0;
+  padding-bottom: 0;
+}
