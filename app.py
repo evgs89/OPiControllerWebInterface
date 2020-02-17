@@ -1,9 +1,9 @@
 from flask import Flask, render_template
-import json
-import pika
+from log import log_page
 
 
 app = Flask(__name__)
+app.register_blueprint(log_page, url_prefix="/log")
 
 
 @app.route('/')

@@ -68,12 +68,14 @@ function init_Ping () {
     Ping.render_function = function (data) {
         let rows = '';
         for (let i in data) {
-            rows += `<li class="mdl-list__item"><span class="mdl-list__item-primary-content">${data[i]}</span></li>`
+            rows += `<li class="mdl-list__item"><span class="mdl-chip"><span class="mdl-chip__text">${data[i]}</span></span></li>`
         }
         return `<ul class="demo-list-icon mdl-list">${rows}</ul>`
     };
     Ping.connect();
 }
+
+//<span class="mdl-list__item-primary-content">${data[i]}</span>
 
 function init_VPN () {
     let VPN = new RabbitElement('vpn', 'vpn');
