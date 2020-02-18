@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <script src={{ url_for('.static', filename='ping.js') }}></script>
+    <div class="mdl-card__supporting-text mdl-grid">
+        <h3 class="mdl-cell mdl-cell--12-col">Доступность сетевых устройств</h3>
+        <div id="ping_table" class="mdl-cell--12-col">
+        </div>
+    </div>
+{% endblock %}

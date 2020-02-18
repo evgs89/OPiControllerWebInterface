@@ -1,24 +1,43 @@
 let spinner = '<div class="mdl-spinner mdl-js-spinner is-active is-upgraded" data-upgraded=",MaterialSpinner"><div class="mdl-spinner__layer mdl-spinner__layer-1"><div class="mdl-spinner__circle-clipper mdl-spinner__left"><div class="mdl-spinner__circle"></div></div><div class="mdl-spinner__gap-patch"><div class="mdl-spinner__circle"></div></div><div class="mdl-spinner__circle-clipper mdl-spinner__right"><div class="mdl-spinner__circle"></div></div></div><div class="mdl-spinner__layer mdl-spinner__layer-2"><div class="mdl-spinner__circle-clipper mdl-spinner__left"><div class="mdl-spinner__circle"></div></div><div class="mdl-spinner__gap-patch"><div class="mdl-spinner__circle"></div></div><div class="mdl-spinner__circle-clipper mdl-spinner__right"><div class="mdl-spinner__circle"></div></div></div><div class="mdl-spinner__layer mdl-spinner__layer-3"><div class="mdl-spinner__circle-clipper mdl-spinner__left"><div class="mdl-spinner__circle"></div></div><div class="mdl-spinner__gap-patch"><div class="mdl-spinner__circle"></div></div><div class="mdl-spinner__circle-clipper mdl-spinner__right"><div class="mdl-spinner__circle"></div></div></div><div class="mdl-spinner__layer mdl-spinner__layer-4"><div class="mdl-spinner__circle-clipper mdl-spinner__left"><div class="mdl-spinner__circle"></div></div><div class="mdl-spinner__gap-patch"><div class="mdl-spinner__circle"></div></div><div class="mdl-spinner__circle-clipper mdl-spinner__right"><div class="mdl-spinner__circle"></div></div></div></div>';
 
+class LimitedList {
+    constructor(max_length) {
+        this.max_length = max_length;
+        this.data = [];
+        this.messages = [];
+    }
+
+    add_data(data) {
+        if ((this.data.length) > this.max_length) {
+            this.data.shift();
+            let delMsg = this.messages.shift();
+            delMsg.ack();
+        }
+        this.data.push(data.body);
+        this.messages.push(data)
+    }
+}
 
 class RabbitElement {
     constructor (queue, element) {
         this.login = 'guest';
         this.password = 'guest';
         this.client = Stomp.over(new WebSocket(`ws://${document.location.hostname}:15674/ws`));
-        this.queue = `/queue/${queue}`;
+        this.queue = queue;
         this.container = element;
         this.connection_options = {
             durable: false,
             'auto-delete': false,
             exclusive: false,
-            'x-message-ttl': null
+            'x-message-ttl': null,
+            'x-max-length': 10000,
+            ack: 'client'
         };
     }
 
     _on_message(message) {
         if (message.body !== '') {
-            let data = this.process_data(message.body);
+            let data = this.process_data(message);
             document.getElementById(this.container).innerHTML = this.render_function(data);
         } else {
             document.getElementById(this.container).innerHTML = spinner;

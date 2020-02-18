@@ -1,20 +1,6 @@
-class LimitedList {
-    constructor(max_length) {
-        this.max_length = max_length;
-        this.data = [];
-    }
-
-    add_data(data) {
-        if ((this.data.length) > this.max_length) {
-            this.data.shift();
-        }
-        this.data.push(data);
-    }
-}
-
 function init_logConnector() {
-    let logConnector = new RabbitElement('logs', 'log');
-    logConnector.connection_options = {durable: true};
+    let logConnector = new RabbitElement('/queue/logs', 'log');
+    logConnector.connection_options = {durable: true, ack: 'client'};
     logConnector['log_messages'] = new LimitedList(8);
     logConnector.process_data = function (data) {
         this.log_messages.add_data(data);
@@ -31,10 +17,15 @@ function init_logConnector() {
 }
 
 function init_switchManagement() {
-    let switchManagement = new RabbitElement('devstate','switch');
-    switchManagement.connection_options["x-message-ttl"] = 5000;
+    let switchManagement = new RabbitElement('/exchange/messages/devstate','switch');
+    switchManagement.connection_options = {persistent: true, id: '123'};
+    // switchManagement.connection_options.persistent = true;
+    // switchManagement.connection_options.exclusive = true;
+    // switchManagement.connection_options["auto-delete"] = true;
+    // switchManagement.connection_options["x-message-ttl"] = 5000;
+    // switchManagement.connection_options["x-max-length"] = 1;
     switchManagement.process_data = function (data) {
-        return JSON.parse(data);
+        return JSON.parse(data.body);
     };
     switchManagement.render_function = function (data) {
         let rows = '';
@@ -60,28 +51,30 @@ function init_switchManagement() {
 }
 
 function init_Ping () {
-    let Ping = new RabbitElement('ping', 'online-devices');
+    let Ping = new RabbitElement('/queue/ping', 'online-devices');
     Ping.connection_options["x-message-ttl"] = 5000;
+    Ping.connection_options["x-max-length"] = 1;
     Ping.process_data = function (data) {
-        return JSON.parse(data);
+        return JSON.parse(data.body);
     };
     Ping.render_function = function (data) {
         let rows = '';
-        for (let i in data) {
-            rows += `<li class="mdl-list__item"><span class="mdl-chip"><span class="mdl-chip__text">${data[i]}</span></span></li>`
+        for (let ip in data) {
+            if (data[ip][0]) {
+                rows += `<li class="mdl-list__item"><span class="mdl-chip"><span class="mdl-chip__text">${ip}</span></span></li>`;
+            }
         }
         return `<ul class="demo-list-icon mdl-list">${rows}</ul>`
     };
     Ping.connect();
 }
 
-//<span class="mdl-list__item-primary-content">${data[i]}</span>
-
 function init_VPN () {
-    let VPN = new RabbitElement('vpn', 'vpn');
+    let VPN = new RabbitElement('/queue/vpn', 'vpn');0
     VPN.connection_options["x-message-ttl"] = 5000;
+    VPN.connection_options["x-max-length"] = 1;
     VPN.process_data = function (data) {
-        return JSON.parse(data);
+        return JSON.parse(data.body);
     };
     VPN.render_function = function (data) {
         let state = data[0] ? 'success' : 'error';
