@@ -17,12 +17,12 @@ conn = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
 channel = conn.channel()
 args = {'x-message-ttl': 5000, 'x-max-length': 1}
 channel.exchange_declare(exchange='messages', exchange_type='topic')
-channel.queue_declare(queue='devstate', durable=False)
+channel.queue_declare(queue='devstate', arguments=args, durable=False)
 channel.queue_bind(queue='devstate', exchange='messages', routing_key='devstate')
 channel.queue_declare(queue='ping', arguments=args, durable=False)
-#channel.queue_bind(queue='ping', exchange='messages', routing_key='devstate')
+channel.queue_bind(queue='ping', exchange='messages', routing_key='ping')
 channel.queue_declare(queue='vpn', arguments=args, durable=False)
-#channel.queue_bind(queue='vpn', exchange='messages', routing_key='vpn')
+channel.queue_bind(queue='vpn', exchange='messages', routing_key='vpn')
 channel.exchange_declare(exchange='log', exchange_type='topic')
 channel.queue_declare('logs', durable=True)
 channel.queue_bind(queue='logs', exchange='log', routing_key='logging')
@@ -32,26 +32,31 @@ while True:
         message = ''
     else:
         message = json.dumps({1: 1, 2: 2, 3: 2, 4: 2, 5: 1})
+    props = pika.BasicProperties()
+    props.expiration = '5000'
     channel.basic_publish(exchange='messages',
                           routing_key='devstate',
-                          body=str(message))
+                          body=str(message),
+                          properties=props)
     print("sent ", str(message))
     ping_state = {'192.168.250.1': [True, '2020-02-18 10:00:00'],
                   '192.168.250.10': [False, '2020-02-18 10:10:00'],
                   '192.168.250.15': [True, '2020-02-18 10:50:10'],
                   '192.168.250.129': [True, '2020-02-18 11:13:55']}
     ping_message = json.dumps(ping_state)
-    channel.basic_publish(exchange='',
+    channel.basic_publish(exchange='messages',
                           routing_key='ping',
-                          body=ping_message)
+                          body=ping_message,
+                          properties=props)
     print("sent", ping_message)
     if random.random() > 0.1:
         vpn_message = json.dumps([True, '10.221.12.3'])
     else:
         vpn_message = json.dumps([False, None])
-    channel.basic_publish(exchange='',
+    channel.basic_publish(exchange='messages',
                           routing_key='vpn',
-                          body=vpn_message)
+                          body=vpn_message,
+                          properties=props)
     print("sent", vpn_message)
     log_source = random.choice(log_sources)
     log_message = str(random.random())
@@ -60,7 +65,7 @@ while True:
                           routing_key='logging',
                           body=f"{logtime}: {log_source}: {log_message}")
     print("sent ", str(log_message))
-    sleep(30)
+    sleep(5)
 
 
 

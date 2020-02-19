@@ -1,10 +1,5 @@
 function init_Ping () {
-    let Ping = new RabbitElement('/queue/ping', 'ping_table');
-    Ping.connection_options["x-message-ttl"] = 5000;
-    Ping.connection_options["x-max-length"] = 1;
-    Ping.process_data = function (data) {
-        return JSON.parse(data.body);
-    };
+    let Ping = new RabbitElement('/exchange/messages/ping', 'ping_table');
     Ping.render_function = function (data) {
         let rows = '';
         for (let ip in data) {

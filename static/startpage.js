@@ -1,7 +1,7 @@
 function init_logConnector() {
     let logConnector = new RabbitElement('/queue/logs', 'log');
     logConnector.connection_options = {durable: true, ack: 'client'};
-    logConnector['log_messages'] = new LimitedList(8);
+    logConnector['log_messages'] = new LimitedList(lastLogLen);
     logConnector.process_data = function (data) {
         this.log_messages.add_data(data);
         return this.log_messages.data;
@@ -17,16 +17,7 @@ function init_logConnector() {
 }
 
 function init_switchManagement() {
-    let switchManagement = new RabbitElement('/exchange/messages/devstate','switch');
-    switchManagement.connection_options = {persistent: true, id: '123'};
-    // switchManagement.connection_options.persistent = true;
-    // switchManagement.connection_options.exclusive = true;
-    // switchManagement.connection_options["auto-delete"] = true;
-    // switchManagement.connection_options["x-message-ttl"] = 5000;
-    // switchManagement.connection_options["x-max-length"] = 1;
-    switchManagement.process_data = function (data) {
-        return JSON.parse(data.body);
-    };
+    let switchManagement = new RabbitElement(`/exchange/messages/devstate`,'switch');
     switchManagement.render_function = function (data) {
         let rows = '';
         for (let port in data) {
@@ -51,12 +42,7 @@ function init_switchManagement() {
 }
 
 function init_Ping () {
-    let Ping = new RabbitElement('/queue/ping', 'online-devices');
-    Ping.connection_options["x-message-ttl"] = 5000;
-    Ping.connection_options["x-max-length"] = 1;
-    Ping.process_data = function (data) {
-        return JSON.parse(data.body);
-    };
+    let Ping = new RabbitElement('/exchange/messages/ping', 'online-devices');
     Ping.render_function = function (data) {
         let rows = '';
         for (let ip in data) {
@@ -70,12 +56,7 @@ function init_Ping () {
 }
 
 function init_VPN () {
-    let VPN = new RabbitElement('/queue/vpn', 'vpn');0
-    VPN.connection_options["x-message-ttl"] = 5000;
-    VPN.connection_options["x-max-length"] = 1;
-    VPN.process_data = function (data) {
-        return JSON.parse(data.body);
-    };
+    let VPN = new RabbitElement('/exchange/messages/vpn', 'vpn');
     VPN.render_function = function (data) {
         let state = data[0] ? 'success' : 'error';
         let server = data[1] ? data[1] : 'Not connected';

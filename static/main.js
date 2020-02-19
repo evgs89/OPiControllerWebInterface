@@ -1,4 +1,13 @@
 let spinner = '<div class="mdl-spinner mdl-js-spinner is-active is-upgraded" data-upgraded=",MaterialSpinner"><div class="mdl-spinner__layer mdl-spinner__layer-1"><div class="mdl-spinner__circle-clipper mdl-spinner__left"><div class="mdl-spinner__circle"></div></div><div class="mdl-spinner__gap-patch"><div class="mdl-spinner__circle"></div></div><div class="mdl-spinner__circle-clipper mdl-spinner__right"><div class="mdl-spinner__circle"></div></div></div><div class="mdl-spinner__layer mdl-spinner__layer-2"><div class="mdl-spinner__circle-clipper mdl-spinner__left"><div class="mdl-spinner__circle"></div></div><div class="mdl-spinner__gap-patch"><div class="mdl-spinner__circle"></div></div><div class="mdl-spinner__circle-clipper mdl-spinner__right"><div class="mdl-spinner__circle"></div></div></div><div class="mdl-spinner__layer mdl-spinner__layer-3"><div class="mdl-spinner__circle-clipper mdl-spinner__left"><div class="mdl-spinner__circle"></div></div><div class="mdl-spinner__gap-patch"><div class="mdl-spinner__circle"></div></div><div class="mdl-spinner__circle-clipper mdl-spinner__right"><div class="mdl-spinner__circle"></div></div></div><div class="mdl-spinner__layer mdl-spinner__layer-4"><div class="mdl-spinner__circle-clipper mdl-spinner__left"><div class="mdl-spinner__circle"></div></div><div class="mdl-spinner__gap-patch"><div class="mdl-spinner__circle"></div></div><div class="mdl-spinner__circle-clipper mdl-spinner__right"><div class="mdl-spinner__circle"></div></div></div></div>';
+const lastLogLen = 8;
+
+function getSessionId() {
+    if (localStorage.getItem('rabbit_id') === null) {
+        let rabbitID = Math.floor(Math.random() * 10000);
+        localStorage.setItem('rabbit_id', rabbitID.toString());
+    }
+    return localStorage.getItem('rabbit_id');
+}
 
 class LimitedList {
     constructor(max_length) {
@@ -26,12 +35,11 @@ class RabbitElement {
         this.queue = queue;
         this.container = element;
         this.connection_options = {
-            durable: false,
-            'auto-delete': false,
-            exclusive: false,
-            'x-message-ttl': null,
-            'x-max-length': 10000,
-            ack: 'client'
+            persistent: true,
+            id: getSessionId(),
+            ack: 'auto',
+            'x-max-length': '1',
+            'x-message-ttl': '5000'
         };
     }
 
@@ -44,7 +52,9 @@ class RabbitElement {
         }
     }
 
-    process_data(data) { return data }
+    process_data(data) {
+        return JSON.parse(data.body);
+    }
 
     render_function(data) { return data }
 
