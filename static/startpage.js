@@ -45,9 +45,9 @@ function init_Ping () {
     let Ping = new RabbitElement('/exchange/messages/ping', 'online-devices');
     Ping.render_function = function (data) {
         let rows = '';
-        for (let ip in data) {
-            if (data[ip][0]) {
-                rows += `<li class="mdl-list__item"><span class="mdl-chip"><span class="mdl-chip__text">${ip}</span></span></li>`;
+        for (let i in data) {
+            if (data[i][1]) {
+                rows += `<li class="mdl-list__item"><span class="mdl-chip"><span class="mdl-chip__text">${data[i][0]}</span></span></li>`;
             }
         }
         return `<ul class="demo-list-icon mdl-list">${rows}</ul>`

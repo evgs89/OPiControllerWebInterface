@@ -39,10 +39,10 @@ while True:
                           body=str(message),
                           properties=props)
     print("sent ", str(message))
-    ping_state = {'192.168.250.1': [True, '2020-02-18 10:00:00'],
-                  '192.168.250.10': [False, '2020-02-18 10:10:00'],
-                  '192.168.250.15': [True, '2020-02-18 10:50:10'],
-                  '192.168.250.129': [True, '2020-02-18 11:13:55']}
+    ping_state = [['192.168.250.1', True, '2020-02-18 10:00:00'],
+                  ['192.168.250.10', False, '2020-02-18 10:10:00'],
+                  ['192.168.250.15', True, '2020-02-18 10:50:10'],
+                  ['192.168.250.129', True, '2020-02-18 11:13:55']]
     ping_message = json.dumps(ping_state)
     channel.basic_publish(exchange='messages',
                           routing_key='ping',
