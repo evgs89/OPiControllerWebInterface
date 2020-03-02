@@ -1,19 +1,36 @@
+const lastLogMessagesToShow = 8;
+
 function init_logConnector() {
-    let logConnector = new RabbitElement('/queue/logs', 'log');
-    logConnector.connection_options = {durable: true, ack: 'client'};
-    logConnector['log_messages'] = new LimitedList(lastLogLen);
-    logConnector.process_data = function (data) {
-        this.log_messages.add_data(data);
-        return this.log_messages.data;
-    };
-    logConnector.render_function = function (data) {
-        let rows = '';
-        for (let i in data) {
-            rows += `<li class="mdl-list__item"><span class="mdl-list__item-primary-content">${data[i]}</span></li>`
+    get_last_log();
+    setInterval(get_last_log, 5000);
+}
+
+function get_last_log() {
+    console.log("GET LAST LOG FROM " + document.location.hostname);
+    let x = new XMLHttpRequest();
+    x.open("GET", `http://${document.location.hostname}:48700/?num=${lastLogMessagesToShow}`, true);
+    x.onload = function () {
+        console.log("LASTLOG RECEIVED: " + x.responseText);
+        if (x.responseText !== '') {
+            let data = JSON.parse(x.responseText);
+            let rows = '';
+            for (let i in data) {
+                rows += `<li class="mdl-list__item mdl-list__item--two-line">`
+                            +`<span class="mdl-list__item-primary-content">${data[i][2]}`
+                                +`<span class="mdl-list__item-sub-title"><i>${data[i][0]}</i> ${data[i][1]}</span>`
+                            +`</span>`
+                        +`</li>`
+            }
+            document.getElementById('log').innerHTML = `<ul class="demo-list-icon mdl-list">${rows}</ul>`
+        } else {
+            document.getElementById('log').innerHTML = spinner;
         }
-        return `<ul class="demo-list-icon mdl-list">${rows}</ul>`
     };
-    logConnector.connect();
+    x.onerror = function () {
+        document.getElementById('log').innerHTML = spinner;
+        console.log(`fail`)
+    };
+    x.send(null);
 }
 
 function init_switchManagement() {
