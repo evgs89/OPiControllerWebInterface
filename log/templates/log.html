@@ -1,7 +1,28 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div>
-        "Hello world"
+    <script src={{ url_for('.static', filename='log.js') }}></script>
+    <div class="mdl-card__supporting-text mdl-grid">
+        <h3 class="mdl-cell mdl-cell--12-col">Логирование событий</h3>
+        <div class="mdl-cell--12-col">
+            <table id="log_table" class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+              <thead>
+                <tr>
+                  <th class="mdl-data-table__cell--non-numeric">Время</th>
+                  <th>Отправитель</th>
+                  <th>Сообщение</th>
+                </tr>
+              </thead>
+              <tbody id="log_tbody">
+                    <!--
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">datetime</td>
+                      <td>sender</td>
+                      <td>message</td>
+                    </tr>
+                    -->
+              </tbody>
+            </table>
+        </div>
     </div>
 {% endblock %}

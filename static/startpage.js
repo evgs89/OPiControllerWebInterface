@@ -6,11 +6,9 @@ function init_logConnector() {
 }
 
 function get_last_log() {
-    console.log("GET LAST LOG FROM " + document.location.hostname);
     let x = new XMLHttpRequest();
     x.open("GET", `http://${document.location.hostname}:48700/?num=${lastLogMessagesToShow}`, true);
     x.onload = function () {
-        console.log("LASTLOG RECEIVED: " + x.responseText);
         if (x.responseText !== '') {
             let data = JSON.parse(x.responseText);
             let rows = '';
